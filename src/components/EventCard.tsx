@@ -3,8 +3,8 @@ import { GameEvent } from '../types';
 
 interface Props {
   event: GameEvent;
-  onContinue: () => void;    // for auto events
-  onChoice?: (index: number) => void;  // for choice events
+  onContinue: () => void;
+  onChoice?: (index: number) => void;
 }
 
 export const EventCard: React.FC<Props> = ({ event, onContinue, onChoice }) => {
@@ -13,7 +13,7 @@ export const EventCard: React.FC<Props> = ({ event, onContinue, onChoice }) => {
   return (
     <div className="event-overlay">
       <div className="event-card">
-        <div className="event-badge">⚡ Event</div>
+        <div className="event-badge">⚡ Событие</div>
         <h2 className="event-title">{event.title}</h2>
         <p className="event-description">{event.description}</p>
 
@@ -37,7 +37,7 @@ export const EventCard: React.FC<Props> = ({ event, onContinue, onChoice }) => {
               </div>
             )}
             <button className="event-continue-btn" onClick={onContinue}>
-              Understood →
+              Понял →
             </button>
           </div>
         )}
@@ -48,8 +48,8 @@ export const EventCard: React.FC<Props> = ({ event, onContinue, onChoice }) => {
 
 function renderAutoEffects(delta: Record<string, number | undefined>) {
   const LABELS: Record<string, string> = {
-    backlog: '📦 Backlog', capacity: '🚴 Capacity', sla: '⏱ SLA',
-    cost: '💸 Cost', trust: '🤝 Trust', energy: '⚡ Energy',
+    backlog: '📦 Бэклог', capacity: '🚴 Мощность', sla: '⏱ SLA',
+    cost: '💸 Расходы', trust: '🤝 Доверие', energy: '⚡ Энергия',
   };
   return Object.entries(delta)
     .filter(([, v]) => v !== undefined && v !== 0)

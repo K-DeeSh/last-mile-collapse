@@ -14,9 +14,9 @@ export const StartScreen: React.FC<Props> = ({ onStart, highScore }) => {
         <div className="start-logo">📦</div>
         <h1 className="start-title">Last Mile<br />Collapse</h1>
         <p className="start-subtitle">
-          You are the last mile. Orders flood in. Couriers are limited.
-          SLA is burning. Business wants it cheaper and faster.<br />
-          <em>Survive the quarter.</em>
+          Ты — последняя миля. Заказы прибывают потоком. Курьеров не хватает.
+          SLA горит. Бизнес хочет дешевле и быстрее.<br />
+          <em>Переживи квартал.</em>
         </p>
 
         <div className="difficulty-select">
@@ -24,32 +24,32 @@ export const StartScreen: React.FC<Props> = ({ onStart, highScore }) => {
             className={`diff-btn ${difficulty === 'normal' ? 'diff-active' : ''}`}
             onClick={() => setDifficulty('normal')}
           >
-            <span className="diff-label">Normal</span>
-            <span className="diff-desc">A regular bad quarter</span>
+            <span className="diff-label">Обычный</span>
+            <span className="diff-desc">Просто плохой квартал</span>
           </button>
           <button
             className={`diff-btn ${difficulty === 'peak' ? 'diff-active' : ''}`}
             onClick={() => setDifficulty('peak')}
           >
-            <span className="diff-label">Peak Season 🔥</span>
-            <span className="diff-desc">Everything on fire from turn 1</span>
+            <span className="diff-label">Пиковый сезон 🔥</span>
+            <span className="diff-desc">Всё горит с первого хода</span>
           </button>
         </div>
 
         <div className="start-tips">
-          <p>🎯 <strong>40 turns</strong> to survive the quarter</p>
-          <p>⚠️ Every decision has <strong>trade-offs</strong></p>
-          <p>⏳ Some effects kick in <strong>later</strong></p>
+          <p>🎯 <strong>40 ходов</strong>, чтобы пережить квартал</p>
+          <p>⚠️ У каждого решения есть <strong>последствия</strong></p>
+          <p>⏳ Некоторые эффекты срабатывают <strong>через несколько ходов</strong></p>
         </div>
 
         {highScore !== null && (
           <div className="high-score-badge">
-            🏆 Best score: <strong>{highScore}</strong>
+            🏆 Лучший результат: <strong>{highScore}</strong>
           </div>
         )}
 
         <button className="start-btn" onClick={() => onStart(difficulty)}>
-          Start Quarter →
+          Начать квартал →
         </button>
       </div>
     </div>

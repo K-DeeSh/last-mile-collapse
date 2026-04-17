@@ -10,7 +10,7 @@ interface Props {
 export const DecisionPanel: React.FC<Props> = ({ decisions, onSelect, disabled }) => {
   return (
     <div className="decision-panel">
-      <h3 className="section-title">Choose your action</h3>
+      <h3 className="section-title">Выбери действие</h3>
       <div className="decision-grid">
         {decisions.map((d) => (
           <button
@@ -25,7 +25,7 @@ export const DecisionPanel: React.FC<Props> = ({ decisions, onSelect, disabled }
               {renderDeltaChips(d.immediate)}
               {d.delayed && (
                 <span className="effect-chip effect-delayed" title={d.delayed.description}>
-                  ⏳ {d.delayed.turns}t
+                  ⏳ через {d.delayed.turns}х
                 </span>
               )}
             </div>
@@ -44,7 +44,6 @@ function renderDeltaChips(delta: Record<string, number | undefined>) {
     .filter(([, v]) => v !== undefined && v !== 0)
     .map(([key, val]) => {
       const positive = (val ?? 0) > 0;
-      // For backlog and cost, positive = bad; for others, positive = good
       const isBad = (key === 'backlog' || key === 'cost') ? positive : !positive;
       return (
         <span

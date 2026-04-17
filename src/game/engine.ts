@@ -131,10 +131,10 @@ function computeNaturalTick(state: GameState): {
   };
 
   if (ordersIn > baseOrders * scaleFactor + 2) {
-    logEntries.push(`${ordersIn} new orders flooded in this turn.`);
+    logEntries.push(`${ordersIn} новых заказов поступило за этот ход.`);
   }
   if (pressure > 0.9) {
-    logEntries.push('Backlog pressure is critical — delivery rate suffering.');
+    logEntries.push('Давление бэклога критическое — скорость доставки страдает.');
   }
 
   return { newMetrics, ordersIn, deliveriesOut, logEntries };
@@ -153,7 +153,7 @@ export function createInitialState(difficulty: 'normal' | 'peak'): GameState {
     log: [
       {
         turn: 0,
-        text: 'Quarter started. Backlog is manageable. Famous last words.',
+        text: 'Квартал начался. Бэклог управляем. Знаменитые последние слова.',
         type: 'system',
       },
     ],
@@ -206,7 +206,7 @@ export function processTurnStart(
   });
 
   for (const msg of triggeredEffects) {
-    log = addLog(log, state.turn, `[Delayed] ${msg}`, 'delayed');
+    log = addLog(log, state.turn, `[Отложено] ${msg}`, 'delayed');
   }
 
   // Update stats
@@ -273,7 +273,7 @@ export function applyAutoEvent(state: GameState): GameState {
   const log = addLog(
     state.log,
     state.turn,
-    `[Event] ${event.title}: ${event.description}`,
+    `[Событие] ${event.title}: ${event.description}`,
     'event'
   );
 
@@ -298,7 +298,7 @@ export function applyEventChoice(state: GameState, choice: EventChoice): GameSta
   const log = addLog(
     state.log,
     state.turn,
-    `[Event] ${event.title} → ${choice.label}: ${choice.consequence}`,
+    `[Событие] ${event.title} → ${choice.label}: ${choice.consequence}`,
     'event'
   );
 
@@ -341,9 +341,9 @@ export function applyDecision(state: GameState, decision: Decision): GameState {
   if (decision.id === 'manual_mode') stats.timesManualMode++;
   if (decision.id === 'do_nothing') stats.timesIgnored++;
 
-  let logText = `[Decision] ${decision.label}: ${decision.description}`;
+  let logText = `[Решение] ${decision.label}: ${decision.description}`;
   if (decision.delayed) {
-    logText += ` (Effect in ${decision.delayed.turns} turns)`;
+    logText += ` (Эффект через ${decision.delayed.turns} хода)`;
   }
   const log = addLog(state.log, state.turn, logText, 'decision');
 

@@ -22,22 +22,22 @@ export const TurnHeader: React.FC<Props> = ({
     <div className="turn-header">
       <div className="turn-header-top">
         <div className="turn-info">
-          <span className="turn-label">Turn</span>
+          <span className="turn-label">Ход</span>
           <span className="turn-number">{turn}</span>
           <span className="turn-of">/ {totalTurns}</span>
-          {difficulty === 'peak' && <span className="difficulty-badge">🔥 Peak</span>}
+          {difficulty === 'peak' && <span className="difficulty-badge">🔥 Пик</span>}
         </div>
         <div className="turn-stats">
           <span className="turn-stat">
             <span className="turn-stat-icon">📥</span>
-            {ordersIn} in
+            {ordersIn} прибыло
           </span>
           <span className="turn-stat">
             <span className="turn-stat-icon">📤</span>
-            {deliveriesOut} out
+            {deliveriesOut} доставлено
           </span>
           <span className="turn-stat turns-left">
-            {turnsLeft} turns left
+            осталось {turnsLeft} ходов
           </span>
         </div>
       </div>

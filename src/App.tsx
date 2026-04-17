@@ -170,6 +170,7 @@ export const App: React.FC = () => {
     <div className="game-layout" key={animKey}>
       <header className="game-header">
         <span className="game-brand">📦 Last Mile Collapse</span>
+        {/* название оставляем на английском — это бренд игры */}
       </header>
 
       <TurnHeader
@@ -185,7 +186,7 @@ export const App: React.FC = () => {
           <MetricsPanel metrics={gameState.metrics} prevMetrics={prevMetrics} />
           {gameState.delayedEffects.length > 0 && (
             <div className="pending-effects">
-              <h3 className="section-title">Pending Consequences</h3>
+              <h3 className="section-title">Отложенные последствия</h3>
               {gameState.delayedEffects.map((e, i) => (
                 <div key={i} className="pending-effect-item">
                   <span className="pending-turns">in {e.turnsRemaining}t</span>

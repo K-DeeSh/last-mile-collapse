@@ -5,18 +5,18 @@ interface MetricConfig {
   key: MetricKey;
   label: string;
   icon: string;
-  invertDanger?: boolean; // if true, low value = danger (default: high = danger)
+  invertDanger?: boolean;
   dangerThreshold: number;
   warningThreshold: number;
 }
 
 const METRIC_CONFIGS: MetricConfig[] = [
-  { key: 'backlog', label: 'Backlog', icon: '📦', dangerThreshold: 80, warningThreshold: 60 },
-  { key: 'capacity', label: 'Capacity', icon: '🚴', invertDanger: true, dangerThreshold: 25, warningThreshold: 40 },
+  { key: 'backlog', label: 'Бэклог', icon: '📦', dangerThreshold: 80, warningThreshold: 60 },
+  { key: 'capacity', label: 'Мощность', icon: '🚴', invertDanger: true, dangerThreshold: 25, warningThreshold: 40 },
   { key: 'sla', label: 'SLA', icon: '⏱', invertDanger: true, dangerThreshold: 20, warningThreshold: 40 },
-  { key: 'cost', label: 'Cost', icon: '💸', dangerThreshold: 80, warningThreshold: 60 },
-  { key: 'trust', label: 'Trust', icon: '🤝', invertDanger: true, dangerThreshold: 20, warningThreshold: 35 },
-  { key: 'energy', label: 'Energy', icon: '⚡', invertDanger: true, dangerThreshold: 20, warningThreshold: 35 },
+  { key: 'cost', label: 'Расходы', icon: '💸', dangerThreshold: 80, warningThreshold: 60 },
+  { key: 'trust', label: 'Доверие', icon: '🤝', invertDanger: true, dangerThreshold: 20, warningThreshold: 35 },
+  { key: 'energy', label: 'Энергия', icon: '⚡', invertDanger: true, dangerThreshold: 20, warningThreshold: 35 },
 ];
 
 function getStatus(value: number, cfg: MetricConfig): 'danger' | 'warning' | 'ok' {

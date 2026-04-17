@@ -19,17 +19,17 @@ export const LogPanel: React.FC<Props> = ({ log, currentTurn }) => {
 
   return (
     <div className="log-panel">
-      <h3 className="section-title">Recent Activity</h3>
+      <h3 className="section-title">Последние события</h3>
       <div className="log-entries">
         {recent.map((entry, i) => (
           <div key={i} className={`log-entry log-${entry.type}`}>
             <span className="log-icon">{TYPE_ICONS[entry.type]}</span>
-            <span className="log-turn">T{entry.turn}</span>
+            <span className="log-turn">Х{entry.turn}</span>
             <span className="log-text">{entry.text}</span>
           </div>
         ))}
         {recent.length === 0 && (
-          <div className="log-empty">No events yet.</div>
+          <div className="log-empty">Пока ничего не произошло.</div>
         )}
       </div>
     </div>
