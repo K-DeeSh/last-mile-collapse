@@ -16,6 +16,7 @@ export interface MetricDelta {
   cost?: number;
   trust?: number;
   energy?: number;
+  [key: string]: number | undefined;
 }
 
 export interface DelayedEffect {
