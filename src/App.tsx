@@ -17,7 +17,7 @@ import { EventCard } from './components/EventCard';
 import { LogPanel } from './components/LogPanel';
 import { EndScreen } from './components/EndScreen';
 import { TurnHeader } from './components/TurnHeader';
-import { submitScore } from './api';
+import { startSession, submitScore } from './api';
 
 type AppPhase = 'login' | 'start' | 'game' | 'end';
 
@@ -55,6 +55,7 @@ export const App: React.FC = () => {
 
   // Track used event IDs to avoid repeats
   const usedEventIds = useRef<Set<string>>(new Set());
+  const sessionTokenRef = useRef<string | null>(null);
 
   const finishGame = useCallback((result: EndgameResult, state: GameState) => {
     saveHighScore(result.score);
@@ -77,11 +78,14 @@ export const App: React.FC = () => {
         timesManualMode: result.stats.timesManualMode,
         timesIgnored: result.stats.timesIgnored,
       },
+      token: sessionTokenRef.current,
     });
+    sessionTokenRef.current = null;
   }, [login]);
 
   const startGame = useCallback((difficulty: 'normal' | 'peak') => {
     usedEventIds.current = new Set();
+    startSession('last_mile_collapse').then(token => { sessionTokenRef.current = token; });
     const initial = createInitialState(difficulty);
     // Process turn 1 start immediately
     const afterTick = processTurnStart(initial, usedEventIds.current);
