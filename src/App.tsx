@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { GameState, Decision, EndgameResult } from './types';
 import {
   createInitialState,
@@ -9,6 +9,7 @@ import {
   getAvailableDecisions,
   buildEndgameResult,
 } from './game/engine';
+import { LoginScreen, getSavedLogin } from './components/LoginScreen';
 import { StartScreen } from './components/StartScreen';
 import { MetricsPanel } from './components/MetricsPanel';
 import { DecisionPanel } from './components/DecisionPanel';
@@ -16,8 +17,9 @@ import { EventCard } from './components/EventCard';
 import { LogPanel } from './components/LogPanel';
 import { EndScreen } from './components/EndScreen';
 import { TurnHeader } from './components/TurnHeader';
+import { submitScore } from './api';
 
-type AppPhase = 'start' | 'game' | 'end';
+type AppPhase = 'login' | 'start' | 'game' | 'end';
 
 const HIGH_SCORE_KEY = 'lmc_highscore';
 
@@ -42,7 +44,8 @@ function saveHighScore(score: number) {
 }
 
 export const App: React.FC = () => {
-  const [appPhase, setAppPhase] = useState<AppPhase>('start');
+  const [login, setLogin] = useState<string>(() => getSavedLogin());
+  const [appPhase, setAppPhase] = useState<AppPhase>(() => getSavedLogin() ? 'start' : 'login');
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [endgameResult, setEndgameResult] = useState<EndgameResult | null>(null);
   const [prevMetrics, setPrevMetrics] = useState<GameState['metrics'] | undefined>(undefined);
@@ -52,6 +55,30 @@ export const App: React.FC = () => {
 
   // Track used event IDs to avoid repeats
   const usedEventIds = useRef<Set<string>>(new Set());
+
+  const finishGame = useCallback((result: EndgameResult, state: GameState) => {
+    saveHighScore(result.score);
+    setHighScore(loadHighScore);
+    setEndgameResult(result);
+    setGameState(state);
+    setAppPhase('end');
+    submitScore({
+      login,
+      score: result.score,
+      victory: result.won,
+      archetype: result.archetype.name,
+      difficulty: result.won ? state.difficulty : state.difficulty,
+      turns: result.turnsPlayed,
+      metrics: result.finalMetrics as unknown as Record<string, number>,
+      stats: {
+        totalOrdersDelivered: result.stats.totalOrdersDelivered,
+        maxBacklogReached: result.stats.maxBacklogReached,
+        timesBacklogCritical: result.stats.timesBacklogCritical,
+        timesManualMode: result.stats.timesManualMode,
+        timesIgnored: result.stats.timesIgnored,
+      },
+    });
+  }, [login]);
 
   const startGame = useCallback((difficulty: 'normal' | 'peak') => {
     usedEventIds.current = new Set();
@@ -74,12 +101,7 @@ export const App: React.FC = () => {
     setAnimKey(k => k + 1);
 
     if (afterDecision.phase === 'result') {
-      const result = buildEndgameResult(afterDecision);
-      saveHighScore(result.score);
-      setHighScore(loadHighScore);
-      setEndgameResult(result);
-      setGameState(afterDecision);
-      setAppPhase('end');
+      finishGame(buildEndgameResult(afterDecision), afterDecision);
       return;
     }
 
@@ -88,18 +110,13 @@ export const App: React.FC = () => {
     const decisions = getAvailableDecisions(afterTick);
 
     if (afterTick.phase === 'result') {
-      const result = buildEndgameResult(afterTick);
-      saveHighScore(result.score);
-      setHighScore(loadHighScore);
-      setEndgameResult(result);
-      setGameState(afterTick);
-      setAppPhase('end');
+      finishGame(buildEndgameResult(afterTick), afterTick);
       return;
     }
 
     setGameState(afterTick);
     setAvailableDecisions(decisions);
-  }, [gameState]);
+  }, [gameState, finishGame]);
 
   const handleEventContinue = useCallback(() => {
     if (!gameState?.pendingEvent) return;
@@ -110,19 +127,14 @@ export const App: React.FC = () => {
     const afterEvent = applyAutoEvent(gameState);
 
     if (afterEvent.phase === 'result') {
-      const result = buildEndgameResult(afterEvent);
-      saveHighScore(result.score);
-      setHighScore(loadHighScore);
-      setEndgameResult(result);
-      setGameState(afterEvent);
-      setAppPhase('end');
+      finishGame(buildEndgameResult(afterEvent), afterEvent);
       return;
     }
 
     const decisions = getAvailableDecisions(afterEvent);
     setGameState(afterEvent);
     setAvailableDecisions(decisions);
-  }, [gameState]);
+  }, [gameState, finishGame]);
 
   const handleEventChoice = useCallback((choiceIndex: number) => {
     if (!gameState?.pendingEvent) return;
@@ -135,19 +147,14 @@ export const App: React.FC = () => {
     const afterEvent = applyEventChoice(gameState, choice);
 
     if (afterEvent.phase === 'result') {
-      const result = buildEndgameResult(afterEvent);
-      saveHighScore(result.score);
-      setHighScore(loadHighScore);
-      setEndgameResult(result);
-      setGameState(afterEvent);
-      setAppPhase('end');
+      finishGame(buildEndgameResult(afterEvent), afterEvent);
       return;
     }
 
     const decisions = getAvailableDecisions(afterEvent);
     setGameState(afterEvent);
     setAvailableDecisions(decisions);
-  }, [gameState]);
+  }, [gameState, finishGame]);
 
   const handleRestart = useCallback(() => {
     setGameState(null);
@@ -156,8 +163,12 @@ export const App: React.FC = () => {
     setAppPhase('start');
   }, []);
 
+  if (appPhase === 'login') {
+    return <LoginScreen onLogin={(l) => { setLogin(l); setAppPhase('start'); }} />;
+  }
+
   if (appPhase === 'start') {
-    return <StartScreen onStart={startGame} highScore={highScore} />;
+    return <StartScreen onStart={startGame} highScore={highScore} login={login} />;
   }
 
   if (appPhase === 'end' && endgameResult) {
